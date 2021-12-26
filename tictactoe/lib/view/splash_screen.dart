@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.30,
                 height: MediaQuery.of(context).size.height * 0.30,
-                child: Image.asset('assets/tictactoe.png')
+                child: Image.asset('asset/tictactoe.png')
               )
             ),
             Align(
