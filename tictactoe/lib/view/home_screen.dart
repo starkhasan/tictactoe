@@ -16,8 +16,6 @@ class _HomeScreenState extends State<HomeScreen> {
   var map = HashMap<int,dynamic>.fromIterables([0,1,2,3,4,5,6,7,8],[null,null,null,null,null,null,null,null,null]);
   var crossTurn = false;
   var savedTurn = false;
-  var wonPoint = 0;
-  var loosePoint = 0;
   var userFirstNumber = 0;
   int playerCross = 0;
   int playerCircle = 0;
