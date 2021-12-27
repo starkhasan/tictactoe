@@ -15,6 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int playTurn = 0;
   var map = HashMap<int,dynamic>.fromIterables([0,1,2,3,4,5,6,7,8],[null,null,null,null,null,null,null,null,null]);
   var crossTurn = false;
+  var savedTurn = false;
   var wonPoint = 0;
   var loosePoint = 0;
   var userFirstNumber = 0;
@@ -27,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: AppColor.appColor,
-        title: const Text('Tic-Tac-Toe',style: TextStyle(fontSize: 14))
+        title: const Text('TicTacToe',style: TextStyle(fontSize: 14))
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
@@ -39,14 +40,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(width: 0.8,color: AppColor.appColor),
+                      border: Border.all(width: 0.8,color: crossTurn ? AppColor.appColor : AppColor.disabledColor),
                       borderRadius: const BorderRadius.all(Radius.circular(5))
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Container(
-                          color: AppColor.appColor,
+                          decoration: BoxDecoration(
+                            color: crossTurn ? AppColor.appColor : AppColor.disabledColor,
+                            borderRadius: const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4))
+                          ),
                           padding: const EdgeInsets.only(left: 5,right: 5,top: 2,bottom: 2),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,25 +66,28 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Text(
                             playerCross.toString().padLeft(4,'0'),
                             textAlign: TextAlign.end,
-                            style: const TextStyle(color: Color.fromARGB(255, 255, 191, 0),fontSize: 25,fontWeight: FontWeight.bold)
+                            style: TextStyle(color: crossTurn ? AppColor.pointEnableColor : AppColor.pointDisableColor,fontSize: 25,fontWeight: FontWeight.bold)
                           )
                         )
                       ]
                     )
                   )
                 ),
-                const SizedBox(width: 50),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.06),
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(width: 1,color: AppColor.appColor),
+                      border: Border.all(width: 0.8,color: !crossTurn ? AppColor.appColor : AppColor.disabledColor),
                       borderRadius: const BorderRadius.all(Radius.circular(5))
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Container(
-                          color: AppColor.appColor,
+                          decoration: BoxDecoration(
+                            color: !crossTurn ? AppColor.appColor : AppColor.disabledColor,
+                            borderRadius: const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4))
+                          ),
                           padding: const EdgeInsets.only(left: 5,right: 5,top: 2,bottom: 2),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Text(
                             playerCircle.toString().padLeft(4,'0'),
                             textAlign: TextAlign.end,
-                            style: const TextStyle(color: Color.fromARGB(255, 255, 191, 0),fontSize: 25,fontWeight: FontWeight.bold)
+                            style: TextStyle(color: !crossTurn ? AppColor.pointEnableColor : AppColor.pointDisableColor,fontSize: 25,fontWeight: FontWeight.bold)
                           )
                         )
                       ]
@@ -114,10 +121,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 return GestureDetector(
                   onTap: () { if(map[index] == null) onClickContainer(context, index);},
                   child: Container(
-                    margin: const EdgeInsets.all(1),
+                    margin: const EdgeInsets.all(0.8),
                     decoration: const BoxDecoration(
                       color: AppColor.appColor,
-                      borderRadius: BorderRadius.all(Radius.circular(2.0))
+                      borderRadius: BorderRadius.all(Radius.circular(1.0))
                     ),
                     child: map[index] == null ? null : Transform.rotate(angle: pi / 4,child: Icon(map[index],color: Colors.white,size: map[index] == Icons.add ? 100 : 80))
                   )
@@ -167,7 +174,9 @@ class _HomeScreenState extends State<HomeScreen> {
   clearData(int result) async{
     if(result == 0){
       playerCross++;
+      savedTurn = crossTurn = true;
     }else if(result == 1){
+      savedTurn = crossTurn = false;
       playerCircle++;
     }
     await showGameDialog(result);
@@ -192,6 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if(result != -1){
         await clearData(result);
       }else if(playTurn == 9 && result == -1){
+        crossTurn = savedTurn;
         await clearData(result);
       }
     }
